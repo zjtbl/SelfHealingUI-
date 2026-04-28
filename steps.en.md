@@ -2,6 +2,26 @@
 
 This file is the English companion of `steps.md`.
 
+## 0. 2026-04-28 Baseline Override (Highest Priority)
+
+Execution baseline has been updated to a decoupled control-plane architecture:
+
+1. Platform runs independently from serviced automation repositories.
+2. Jenkins webhook is the primary trigger; platform can also trigger Jenkins jobs.
+3. GitLab automation scope is branch + Draft MR only (no auto-merge to main).
+4. Rollback policy uses `revert commit`; revert conflict is marked and stopped.
+5. V1 handles locator failures only (no assertion semantic healing).
+6. Timezone baseline is `Asia/Shanghai`.
+7. One project may bind multiple Jenkins jobs; parallel execution must be traceable.
+
+Execution source of truth:
+
+- `V1_API_CONTRACT.zh-CN.md`
+- `V1_DATABASE_DDL.zh-CN.md`
+- `V1_LANGGRAPH_STATE_MACHINE.zh-CN.md`
+
+When historical sections conflict with this baseline, use this baseline.
+
 ## Scope
 The project targets a closed loop for legacy Java + BDD + Playwright automation:
 - Frontend change impact analysis

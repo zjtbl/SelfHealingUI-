@@ -3,6 +3,12 @@
 ## Strategy Objective
 Guarantee that self-healing changes are trustworthy, reproducible, and reviewable.
 
+## V1 Execution Policy
+1. V1 default is analysis-only (no patch write).
+2. V1.5 write-flow must be explicitly enabled per project.
+3. Branch CI can be auto-triggered when write-flow is enabled.
+4. Merge to main is always human-triggered.
+
 ## Validation Layers
 1. Static checks
 2. Runtime UI validation
@@ -34,8 +40,9 @@ Guarantee that self-healing changes are trustworthy, reproducible, and reviewabl
 
 ## Governance Validation
 - L1/L2/L3 classification present
-- Human approval required for L2/L3
+- L2/L3 must not enter automatic locator patch flow
 - Audit fields present in each run record
+- Revert conflict is marked and stopped
 
 ## Exit Rule
 A phase is accepted only when its verification file in `verification/` is fully satisfied.

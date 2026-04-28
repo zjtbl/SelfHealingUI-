@@ -2,6 +2,10 @@
 
 This file is the English companion of `skill-self-think.md`.
 
+> Priority note (2026-04-28):
+> This document is a research/thinking record. Execution baseline should follow:
+> `V1_API_CONTRACT.zh-CN.md`, `V1_DATABASE_DDL.zh-CN.md`, `V1_LANGGRAPH_STATE_MACHINE.zh-CN.md`.
+
 ## Core Direction
 Upgrade from a domain-only skill to a project-level engineering harness:
 - phase routing

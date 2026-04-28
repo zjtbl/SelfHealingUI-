@@ -5,6 +5,20 @@ Build an AI-assisted, auditable UI self-healing testing platform for:
 - Java + BDD + Playwright automation assets
 - React 18 + Ant Design 5 frontend changes
 
+## Active Baseline (2026-04-28)
+Use the following as current source of truth:
+1. `V1_API_CONTRACT.zh-CN.md`
+2. `V1_DATABASE_DDL.zh-CN.md`
+3. `V1_LANGGRAPH_STATE_MACHINE.zh-CN.md`
+
+Execution profile:
+1. Platform is a decoupled control plane.
+2. Jenkins webhook is the primary trigger.
+3. V1 default mode is failure analysis only (no patch write).
+4. V1.5 enables branch patch flow by feature flag.
+5. Revert conflict must be marked and stopped.
+6. Timezone baseline is `Asia/Shanghai`.
+
 This repository is currently a design-and-planning workspace. Changes in this repo should prioritize architecture, planning, validation rules, and governance artifacts.
 
 ## Operating Model

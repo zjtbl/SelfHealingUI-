@@ -3,6 +3,11 @@
 ## Objective
 Define the execution roadmap for a production-grade UI self-healing testing platform, based on existing project documents and agent best practices.
 
+## Execution Baseline
+1. V1 scope: standalone control plane + Jenkins webhook ingestion + failure analysis + decision recording.
+2. V1.5 scope: locator branch-healing flow enabled by feature flag.
+3. GitLab merge to main is always manual.
+
 ## Phase Roadmap
 1. Phase 00: Baseline Binding
 2. Phase 01: Locator Healing MVP
@@ -34,6 +39,6 @@ Define the execution roadmap for a production-grade UI self-healing testing plat
 - L3: environment, data, backend, permissions
 
 ## Immediate Next Milestones
-1. Complete Phase 00 artifacts and verification evidence.
-2. Implement Phase 01 workflow in an isolated pilot scope (1 page, 10-50 scenarios).
-3. Produce first auditable healing report set.
+1. Complete webhook ingestion, payload enrichment, and artifact fetching for one project.
+2. Complete locator-failure classification and decision recording in analysis-only mode.
+3. Enable optional V1.5 branch flow in a controlled pilot and validate revert behavior.

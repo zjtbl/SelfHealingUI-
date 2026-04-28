@@ -25,6 +25,20 @@ orient to repo state
   -> persist evidence and decision
 ```
 
+## Current Delivery Profile (2026-04-28)
+
+Use this profile as the active execution baseline:
+
+1. The platform is a standalone control plane and must stay decoupled from serviced automation repos.
+2. Primary trigger is Jenkins webhook callback to platform API.
+3. Platform also actively triggers Jenkins jobs when required.
+4. GitLab automation scope: create branch, commit patch, create Draft MR, query MR changes, revert commit.
+5. No automatic merge to main branch.
+6. V1 healing scope is locator-only failures; assertion semantic changes are out of scope.
+7. Revert conflict handling: mark failure and stop automation.
+8. Timezone baseline: `Asia/Shanghai`.
+9. One project may configure multiple Jenkins jobs; parallel runs must be traceable by `event_id` and `run_id`.
+
 Always separate:
 
 - **Intent**: the business action or assertion.

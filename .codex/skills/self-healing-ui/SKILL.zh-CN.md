@@ -31,6 +31,20 @@ description: 面向 Java + BDD + Playwright 项目的 AI 辅助 UI 自愈设计�
 - **Evidence**：DOM、a11y、截图、trace、日志
 - **Patch**：最小 Java/前端 diff
 
+## 当前交付口径（2026-04-28）
+
+当前执行基线如下：
+
+1. 平台是独立控制面，与被服务自动化仓库解耦。
+2. 主要触发入口是 Jenkins webhook 回调平台 API。
+3. 平台也支持主动触发 Jenkins Job。
+4. GitLab 自动化范围：建分支、提交补丁、创建 Draft MR、查询 MR 变更、revert commit。
+5. 不自动合并主干分支。
+6. V1 仅处理 locator 类失败；断言语义变更不在当前范围。
+7. 回退冲突时只打标失败并停止自动流程。
+8. 时区统一为 `Asia/Shanghai`。
+9. 一个项目可配置多个 Jenkins Job，并行运行必须以 `event_id`/`run_id` 可追溯。
+
 ## 会话启动协议
 1. 确认 `pwd` 在项目内。
 2. 读取 `steps.md`、`skill-self-think.md` 与相关配置。

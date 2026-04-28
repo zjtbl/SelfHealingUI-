@@ -1,5 +1,9 @@
 # UI 自愈测试项目 Skill 增强思考：引入 Harness Engineering 与 gstack 实践
 
+> 优先级说明（2026-04-28）：
+> 本文档属于思考与研究记录。实际执行请优先以以下 V1 基线文档为准：
+> `V1_API_CONTRACT.zh-CN.md`、`V1_DATABASE_DDL.zh-CN.md`、`V1_LANGGRAPH_STATE_MACHINE.zh-CN.md`。
+
 ## 1. 背景
 
 当前目录里的项目目标已经比较清晰：给历史 Java + BDD + Playwright 自动化项目增加 AI 辅助能力，围绕 React 18 + Ant Design 5 前端变化，完成 UI locator 自愈、页面元素扫描、知识库/RAG、Java 补丁生成、重跑验证、PR 影响分析和新故事卡自动化生成。

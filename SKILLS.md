@@ -3,6 +3,11 @@
 ## Purpose
 Define project-level skills for repeatable workflows in UI self-healing testing.
 
+## Active Delivery Mode
+1. V1: analysis-first mode (failure parsing, classification, decision, recording).
+2. V1.5: optional write-flow mode (branch patch, Draft MR, rerun, revert) behind feature flag.
+3. Default execution must not assume patch writing is enabled.
+
 ## Active Skill
 - `self-healing-ui`
   - Path: `.codex/skills/self-healing-ui/SKILL.md`

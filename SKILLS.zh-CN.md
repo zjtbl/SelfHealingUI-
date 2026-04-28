@@ -3,6 +3,11 @@
 ## 目的
 定义项目级 skill，用于 UI 自愈测试中的可重复工作流。
 
+## 当前交付模式
+1. V1：分析优先模式（失败解析、分类、决策、记录）。
+2. V1.5：通过开关启用写分支模式（补丁提交、Draft MR、重跑、回退）。
+3. 默认不假设“补丁写入”已开启。
+
 ## 当前启用 Skill
 - `self-healing-ui`
   - 路径：`.codex/skills/self-healing-ui/SKILL.md`

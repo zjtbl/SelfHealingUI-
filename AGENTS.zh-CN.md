@@ -5,6 +5,20 @@
 - Java + BDD + Playwright 自动化资产
 - React 18 + Ant Design 5 前端变更
 
+## 当前基线（2026-04-28）
+以下文档是当前执行口径的最高优先级：
+1. `V1_API_CONTRACT.zh-CN.md`
+2. `V1_DATABASE_DDL.zh-CN.md`
+3. `V1_LANGGRAPH_STATE_MACHINE.zh-CN.md`
+
+执行模式：
+1. 平台是独立控制面，与被服务仓库解耦。
+2. Jenkins webhook 是主触发入口。
+3. V1 默认仅做失败分析，不写补丁。
+4. V1.5 通过开关启用分支补丁流。
+5. 回退冲突只打标并停止。
+6. 统一时区为 `Asia/Shanghai`。
+
 当前仓库以方案与规划为主。此阶段优先沉淀架构、计划、验证规则与治理文档。
 
 ## 工作模式
