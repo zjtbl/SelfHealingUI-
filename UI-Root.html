@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 驱动测试自愈架构 - 技术评审版</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js"></script>
+    <style>
+        :root { --primary: #2563eb; --success: #16a34a; --warning: #d97706; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #e2e8f0; margin: 0; padding: 40px 20px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: #0f172a; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .header p { color: #475569; font-size: 15px; margin: 0; }
+        .canvas-container { background: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 1100px; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s ease; }
+        .modal-content { background: #ffffff; border-radius: 12px; width: 600px; max-width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); position: relative; transform: translateY(20px); transition: transform 0.2s ease; overflow: hidden; }
+        .modal-overlay.active { opacity: 1; display: flex; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-header-area { background: #f8fafc; padding: 25px 30px 20px; border-bottom: 1px solid #e2e8f0; }
+        .modal-tag { display: inline-block; padding: 4px 10px; font-size: 12px; font-weight: 600; border-radius: 6px; margin-bottom: 12px; color: white; background: var(--primary); }
+        .modal-title { font-size: 20px; font-weight: 700; color: #0f172a; margin: 0; }
+        .modal-body-area { padding: 30px; }
+        .section-title { font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .section-content { font-size: 14px; color: #475569; line-height: 1.6; margin-bottom: 25px; padding: 15px; background: #f1f5f9; border-radius: 8px; font-family: Consolas, Monaco, monospace; white-space: pre-line; }
+        .value-content { font-size: 14px; color: #166534; line-height: 1.6; padding: 15px; background: #dcfce7; border-left: 4px solid var(--success); border-radius: 4px; white-space: pre-line; }
+        .close-btn { position: absolute; top: 20px; right: 20px; cursor: pointer; background: transparent; border: none; width: 32px; height: 32px; font-size: 24px; color: #64748b; line-height: 1; border-radius: 6px; }
+        .close-btn:hover { background: #e2e8f0; color: #0f172a; }
+        .node { cursor: pointer !important; }
+        .node:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>自愈测试编排平台 (Agentic Workflow)</h1>
+    <p>技术评审：系统链路实现细节与节点核心价值</p>
+</div>
+<div class="canvas-container">
+    <div class="mermaid" id="graphDiv">
+flowchart TB
+ subgraph Trigger["【触发层】前端事件入口"]
+        T1["前端代码提交 Webhook(Git Push/Merge)"]
+        T3["触发自愈分析流程"]
+        T2["关联初始前端和自动化项目"]
+  end
+ subgraph Decision["【决策层】 LangGraph"]
+        D1["Orchestrator 编排器(LangGraph 状态机)"]
+        D2["分支同步管理器(主干→分支拉取)"]
+  end
+ subgraph Healing["【自愈层】Python Skills"]
+        H1["Change Analyzer(diff解析)"]
+        H2["Impact Predictor(影响范围预测)"]
+        H3["Locator Healer(定位器修复)"]
+        H4["Patch Generator(Java代码补丁生成)"]
+  end
+ subgraph Execution["【执行层】Java + Playwright"]
+        E1["Git 分支管理(代码提交/回退)"]
+        E2["Playwright Runner(BDD测试执行)"]
+        E3["人工合并代码到主干(预留)(后期: 自动合并)"]
+        E4["结果判定路由(成功/失败分支)"]
+  end
+ subgraph Logging["【记录层】PostgreSQL + otherDB"]
+        L1["自愈运行标记表(PostgreSQL, 判断用)"]
+        L2["修复记录数据库(失败结果/修改记录)"]
+  end
+ subgraph Knowledge["【知识库】"]
+        n1[("知识库存储")]
+  end
+
+    T3 --> D1
+    D1 --> D2 & n1
+    D2 --> H1
+    H1 --> H2
+    H2 --> H3
+    H4 --> E1
+    E1 --> E2
+    E2 --> E4
+    E4 --> L1 & L2
+    T1 --> T3
+    H3 --> H4 & n1
+    L1 --> E3
+    Logging --> n1
+    T2 --> n1
+
+     T1:::trigger
+     T3:::trigger
+     T2:::trigger
+     D1:::decision
+     D2:::decision
+     H1:::healing
+     H2:::healing
+     H3:::healing
+     H4:::healing
+     E1:::execution
+     E2:::execution
+     E3:::execution
+     E4:::execution
+     L1:::logging
+     L2:::logging
+    classDef trigger fill:#e6f7ff,stroke:#91d5ff,color:#1890ff,stroke-width:2px
+    classDef decision fill:#f0f9ff,stroke:#91d5ff,color:#1890ff,stroke-width:2px
+    classDef healing fill:#f6ffed,stroke:#52c418,color:#52c418,stroke-width:2px
+    classDef execution fill:#fff7e6,stroke:#faad14,color:#faad14,stroke-width:2px
+    classDef logging fill:#f9f9f9,stroke:#d9d9d9,color:#595959,stroke-width:2px
+    classDef layerTitle fill:#ffffff,stroke:#d9d9d9,stroke-width:2px,color:#595959,font-weight:bold
+    style T2 fill:#91d5ff
+    style D1 fill:#f9f9f9
+    style D2 fill:#f9f9f9
+    style L1 fill:#fff7e6
+    style L2 fill:#fff7e6
+    style n1 fill:#00C853
+    style Logging fill:#BBDEFB
+    style Knowledge fill:#c6f6d5,stroke:#38a169,stroke-width:2px
+
+    click T1 call showModal() "查看技术细节"
+    click T3 call showModal() "查看技术细节"
+    click T2 call showModal() "查看技术细节"
+    click D1 call showModal() "查看技术细节"
+    click D2 call showModal() "查看技术细节"
+    click H1 call showModal() "查看技术细节"
+    click H2 call showModal() "查看技术细节"
+    click H3 call showModal() "查看技术细节"
+    click H4 call showModal() "查看技术细节"
+    click E1 call showModal() "查看技术细节"
+    click E2 call showModal() "查看技术细节"
+    click E3 call showModal() "查看技术细节"
+    click E4 call showModal() "查看技术细节"
+    click L1 call showModal() "查看技术细节"
+    click L2 call showModal() "查看技术细节"
+    click n1 call showModal() "查看技术细节"
+    </div>
+</div>
+<div class="modal-overlay" id="myModal">
+    <div class="modal-content">
+        <div class="modal-header-area">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <div class="modal-tag" id="modalTag">所属分层</div>
+            <h2 class="modal-title" id="modalTitle">节点名称</h2>
+        </div>
+        <div class="modal-body-area">
+            <div class="section-title">🛠️ 实现细节 (Implementation Detail)</div>
+            <div class="section-content" id="modalDetail">实现细节描述...</div>
+            <div class="section-title">💡 核心价值 (Core Value)</div>
+            <div class="value-content" id="modalValue">简述节点价值...</div>
+        </div>
+    </div>
+</div>
+<script>
+    mermaid.initialize({ startOnLoad: true, securityLevel: 'loose' });
+
+    const nodeData = {
+        "T1": { 
+            tag: "【触发层】前端事件入口", 
+            title: "前端代码提交 Webhook(Git Push/Merge)", 
+            detail: `Agent8 (GIT变更监控器) 拉取 PR diff
+结合历史映射 (test-page-component-file) 进行文件路径分类
+
+目录风险规则：
+- src/pages/** → 高风险
+- components/layouts → 中高风险
+- api/store/hooks → 中等风险
+
+输出：风险等级、受影响 routes/tests 子集建议、PR 评论预警`, 
+            value: `PR级影响面分析入口。实现测试左移，驱动后续Agent编排决策。` 
+        },
+        "T2": { 
+            tag: "【触发层】前端事件入口", 
+            title: "关联初始前端和自动化项目", 
+            detail: `初始化关联阶段
+输入资源导入：
+- 前端源码 (Vite + React-Router + AntD5 + Axios)
+- 运行态页面 (preview 环境截图/文档)
+- 历史测试资产 (导入映射图谱，逐步迁移到 POM + catalog)
+
+构建可追溯图谱基线：
+test → POM → locator → testid → component → source file/route`, 
+            value: `建立前端与测试工程的初始映射关系，为后续影响面分析提供基线数据。` 
+        },
+        "T3": { 
+            tag: "【触发层】前端事件入口", 
+            title: "触发自愈分析流程", 
+            detail: `Python Orchestrator 接收 PR 事件后进行策略决策
+根据 Agent8 风险评估结果决定：
+- 执行链与并行度
+- 重试策略与门禁判定
+
+核心原则：
+- 可验证闭环：LLM只产候选，必须静态规则+Playwright验证
+- 增量推进：先分析执行，再注入，再生成与自愈
+- 不盲修：L1自动、L2人审、L3归因环境`, 
+            value: `编排8个Agent的执行路径与质量门禁，确保AI产出必须经过验证。` 
+        },
+        "D1": { 
+            tag: "【决策层】LangGraph", 
+            title: "Orchestrator 编排器(LangGraph 状态机)", 
+            detail: `系统控制中枢
+使用 LangGraph StateGraph 构建有限状态机 (FSM)
+各 Python Agent 为节点，Conditional Edges 判定流转方向
+集成 SQLite/PostgreSQL Checkpoint 机制
+支持断点续查与容错重试
+
+关联 Policy Engine：
+- TestID Linter Gate
+- Locator Policy
+- Repair Policy (修复红线)
+- Env Policy (环境门禁)`, 
+            value: `赋予测试流水线状态记忆与动态容错的架构级反脆弱能力。` 
+        },
+        "D2": { 
+            tag: "【决策层】LangGraph", 
+            title: "分支同步管理器(主干→分支拉取)", 
+            detail: `Git Adapter 封装 Git API (PyGithub/python-gitlab)
+基于触发点 commit_id 自动拉取隔离沙盒分支
+如：auto-heal-branch-{id}
+
+Agent2 (testid增量注入器) 以 PR 方式输出补丁
+默认走 PR 审核，不直接污染主干
+支持自动建 PR、评论、合并`, 
+            value: `最小侵入可审计的物理隔离沙盒，AI幻觉错误不影响主干。` 
+        },
+        "H1": { 
+            tag: "【自愈层】Python Skills", 
+            title: "Change Analyzer(diff解析)", 
+            detail: `Node.js Babel parser/traverse/generator 扫描 TSX 源码
+
+识别内容：
+- AntD import 映射 (Button/Form/Modal/Select/Table)
+- Form.Item 的 label/name 属性
+- 交互点 (onClick/onChange/onFinish)
+
+产出：component_graph.static.json
+- node_id (file+loc+kind hash)
+- page_key、antd_component、props
+- form_context、portal_expected`, 
+            value: `AST语法层面理解 React+AntD 变更，替代脆弱正则匹配。` 
+        },
+        "H2": { 
+            tag: "【自愈层】Python Skills", 
+            title: "Impact Predictor(影响范围预测)", 
+            detail: `基于 route_map + component_graph (static+runtime) 构建依赖图
+运用图遍历算法计算变更元素影响爆炸半径
+
+动态框定需执行的测试子集：
+- smoke (冒烟)
+- pr-impact (PR影响面)
+- nightly (全量回归)
+
+输出：受影响 routes 列表、可测性缺口 (无testid/无label/portal风险)`, 
+            value: `精准锁定失效用例，消除盲目全量回归，小时级→分钟级。` 
+        },
+        "H3": { 
+            tag: "【自愈层】Python Skills", 
+            title: "Locator Healer(定位器修复)", 
+            detail: `Agent3 融合 static + runtime 证据生成 locator_catalog.json
+
+定位优先级 (AntD推荐)：
+1. getByRole({name}) → 用户视角
+2. getByLabel (Form)
+3. getByTestId
+4. CSS/XPath → 标 fragile 且需审批
+
+Portal/Scope 处理：
+- Modal/Dropdown/DatePicker 先定位 dialog/listbox 再相对查找
+多语言风险：关键动作按钮倾向 testid (可配置白名单)`, 
+            value: `构建稳定定位体系，AntD组件特化适配，新增测试不依赖CSS class。` 
+        },
+        "H4": { 
+            tag: "【自愈层】Python Skills", 
+            title: "Patch Generator(Java代码补丁生成)", 
+            detail: `跨语言协作枢纽
+
+Agent2：通过 Babel 修改 TSX，最小化 diff
+输出：testid_patch.diff (统一diff格式，可直接PR)
+附带：testid_injection_report.json (新增/变更/冲突解决说明)
+
+Agent7 L1自动修复：
+- locator 从 fragile → role/label/testid
+- 补充合理等待 (基于网络或状态变化)
+- 触发增量 testid 注入
+
+修复红线：
+禁止弱化断言、禁止无上限重试、禁止默认 force:true`, 
+            value: `将LLM文本转化为工程可应用的代码逻辑，不盲修原则的制度化体现。` 
+        },
+        "E1": { 
+            tag: "【执行层】Java + Playwright", 
+            title: "Git 分支管理(代码提交/回退)", 
+            detail: `Git Adapter 在容器内调用 Shell 命令
+Agent2 testid注入：git apply 应用补丁
+Agent7 L1修复：git commit 并 push
+
+版本化机制：
+- 所有 artifacts 与 commit_sha 绑定并可回放
+- locator catalog 支持 aliases (testid重命名兼容期)
+- 一键回滚：切回上一个稳定 catalog/POM 版本 (按tag)`, 
+            value: `机器写码→机器提交的无人值守操作，秒级回滚保障主干安全。` 
+        },
+        "E2": { 
+            tag: "【执行层】Java + Playwright", 
+            title: "Playwright Runner(BDD测试执行)", 
+            detail: `Python 驱动历史 Java 自动化项目执行
+
+补丁应用阶段：
+- Python 接收 H4 生成的 Java 补丁 (.patch / .diff)
+- 通过 subprocess 执行 git apply 应用到沙盒分支
+- 冲突检测：失败则回滚并标记 L3 (环境问题)
+
+Java 项目构建：
+- Maven: mvn test-compile -pl e2e-module -am
+- Gradle: gradle :e2e:compileTestJava
+- 依赖检查：自动下载 Playwright Java 浏览器驱动
+
+跨语言驱动执行：
+- Python subprocess.Popen 调用 mvn test / gradle test
+- 环境变量注入：CI=true、HEADLESS=true、BASE_URL
+- 进程隔离：超时控制 (默认 10min)、SIGKILL 兜底
+
+BDD 测试框架：
+- Cucumber + Playwright Java (com.microsoft.playwright)
+- Page Object Model 封装 AntD 组件交互
+- 失败截图 / 视频 / trace 自动归档到 Allure
+
+结果解析与反馈：
+- 解析 JUnit XML / TestNG HTML Report
+- 提取失败用例：类名、方法、断言堆栈、截图路径
+- 输出结构化结果 → Agent7 (失败根因诊断)
+- 成功则触发 E3 (人工合并审批)
+`, 
+            value: `对抗大模型幻觉的最强硬防线，结果不靠猜，靠跑。Trace证据包为诊断提供原始素材。` 
+        },
+        "E3": { 
+            tag: "【执行层】Java + Playwright", 
+            title: "人工合并代码到主干(预留)(后期: 自动合并)", 
+            detail: `Human-in-the-Loop (HITL) 机制
+
+修复治理分级：
+- L1 (定位器/testid/等待策略) → 可自动 PR
+- L2 (业务预期变更、断言更新) → 必须人工审批
+- L3 (产品缺陷/环境故障/代理配置) → 阻断并输出证据
+
+PR 评论模板：
+- 通过/阻断结论
+- 报告链接 (Allure/HTML)
+- 受影响 routes/tests
+- 建议动作 + 自动 PR 链接`, 
+            value: `早期信任域阶段的人工兜底，修复红线保障主干代码质量。` 
+        },
+        "E4": { 
+            tag: "【执行层】Java + Playwright", 
+            title: "结果判定路由(成功/失败分支)", 
+            detail: `Agent7 (测试修复器) 进行失败根因诊断
+输入：trace/video/netlog/console/截图 + PR diff + catalog/POM
+
+根因树覆盖：
+- LOCATOR_NOT_FOUND：元素删改、portal scope变化、testid缺失/变更
+- ASSERTION_FAILED：业务变更(需人审)、异步时序问题(改等待策略)
+- API_ERROR：后端不可达、Vite代理localhost:8080在CI不通、接口契约变更
+- ENV_ERROR：探针失败(前端不可达/后端不健康)
+
+输出：failure_diagnosis.json
+- evidence refs、fix_level (L1/L2/L3)、patch_candidates`, 
+            value: `自适应闭环反馈，失败驱动AI自我反思纠正，避免环境故障误判为测试问题。` 
+        },
+        "L1": { 
+            tag: "【记录层】PostgreSQL", 
+            title: "自愈运行标记表(PostgreSQL, 判断用)", 
+            detail: `PostgreSQL/SQLite 元数据数据库
+
+所有 artifacts 必须包含元信息：
+- commit_sha、pr_number、generated_at
+- tool_version、source_repo
+
+核心表：自愈运行流水
+- trace_id、关联 commit_id
+- 当前状态流转、Agent执行耗时
+- Token消耗统计
+
+PR评论输出：风险等级 + 建议子集 + 报告链接 + 自动PR链接
+Grafana抽取展示大屏看板`, 
+            value: `完备可观测性与度量数据，精准计算ROI产出与模型API算力成本。` 
+        },
+        "L2": { 
+            tag: "【记录层】PostgreSQL", 
+            title: "修复记录数据库(失败结果/修改记录)", 
+            detail: `Traceability Graph (可追溯图谱) 持久化存储
+
+完整链路：
+test → POM → locator → testid → component node → source file/route
+
+持久化保存 failure_diagnosis.json：
+- 失败类型细分枚举 (PROXY_MISCONFIG、BACKEND_UNREACHABLE等)
+- evidence (trace/screenshot/netlog refs)
+- fix_level (L1/L2/L3)
+- patch_candidates
+
+Artifact保留周期 (TTL) 可配置
+trace/video 默认私有保存 (按权限访问)`, 
+            value: `企业隐性技术资产池，为后续开源模型SFT提供领域专属语料。` 
+        },
+        "n1": { 
+            tag: "知识库与记忆", 
+            title: "知识库存储", 
+            detail: `Traceability Graph + 历史测试资产导入机制
+
+存储内容：
+- route_map.json
+- component_graph (static + runtime)
+- locator_catalog.json
+- POM 代码 (pom/index.ts 导出所有PageObjects)
+- test_plan.json (journeys/states/coverage targets)
+- failure_diagnosis.json (历史修复案例)
+
+新项目报错时触发 RAG 检索
+提取 Top-k 相似历史修复案例作为 Few-shot 注入 Prompt
+
+所有 artifacts 版本化，与 commit_sha 绑定
+支持按 tag 一键回滚到上一个稳定 catalog/POM 版本`, 
+            value: `打破项目间孤岛，新自愈流程直接复用历史成功经验，实现活系统持续进化。` 
+        }
+    };
+
+    window.showModal = function(nodeId) {
+        if (!nodeData[nodeId]) return;
+        const data = nodeData[nodeId];
+        document.getElementById('modalTag').innerText = data.tag;
+        document.getElementById('modalTitle').innerText = data.title;
+        document.getElementById('modalDetail').innerText = data.detail;
+        document.getElementById('modalValue').innerText = data.value;
+        const overlay = document.getElementById('myModal');
+        overlay.style.display = 'flex';
+        setTimeout(() => overlay.classList.add('active'), 10);
+    };
+
+    window.closeModal = function() {
+        const overlay = document.getElementById('myModal');
+        overlay.classList.remove('active');
+        setTimeout(() => overlay.style.display = 'none', 200);
+    };
+
+    document.getElementById('myModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+</script>
+</body>
+</html>

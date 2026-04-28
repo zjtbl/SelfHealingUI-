@@ -1,0 +1,23 @@
+locator_priority:
+  - testid
+  - role_name
+  - label
+  - placeholder
+  - text
+  - css
+  - xpath
+
+disallowed_patterns:
+  - absolute_xpath
+  - random_class
+  - nth_without_context
+
+validation_rules:
+  must_be_unique: true
+  must_be_visible: true
+  require_action_replay: true
+
+antd_scope_rules:
+  modal_requires_dialog_scope: true
+  dropdown_requires_listbox_scope: true
+  datepicker_requires_popup_scope: true

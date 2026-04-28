@@ -1,0 +1,15 @@
+environment_health_checks:
+  frontend_reachable: true
+  backend_reachable: true
+  auth_service_reachable: true
+
+data_handling:
+  mask_sensitive_dom_fields: true
+  mask_sensitive_screenshots: true
+  retain_raw_trace_days: 14
+  retain_masked_artifacts_days: 90
+
+run_controls:
+  max_rerun_attempts: 1
+  default_timeout_seconds: 600
+  classify_env_failure_as_L3: true

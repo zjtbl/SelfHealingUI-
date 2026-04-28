@@ -1,0 +1,19 @@
+risk_levels:
+  L1:
+    description: locator contract or safe wait strategy
+    auto_pr_allowed: true
+    human_review_required: false
+  L2:
+    description: assertion semantics or business-flow semantics
+    auto_pr_allowed: false
+    human_review_required: true
+  L3:
+    description: environment, data, backend, permission
+    auto_pr_allowed: false
+    human_review_required: true
+
+patch_constraints:
+  allow_page_object_only: true
+  forbid_cucumber_business_step_change: true
+  forbid_assertion_weakening: true
+  forbid_unbounded_retry: true

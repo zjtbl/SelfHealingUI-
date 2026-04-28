@@ -1,0 +1,31 @@
+project:
+  name: self-healing-ui
+  owner: qa-platform
+
+repositories:
+  frontend:
+    path: ../frontend
+    default_branch: main
+  automation:
+    path: ../automation-java
+    default_branch: main
+
+execution:
+  base_url: https://test.example.com
+  test_command: mvn test
+  browser: chromium
+  headless: true
+
+pilot_scope:
+  routes:
+    - /login
+  scenarios:
+    - User login successfully
+
+traceability:
+  required_fields:
+    - trace_id
+    - commit_sha
+    - source_repo
+    - tool_version
+    - created_at
